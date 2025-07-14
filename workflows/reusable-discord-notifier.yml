@@ -1,0 +1,63 @@
+name: 'Reusable Discord Issue Notifier'
+
+on:
+  workflow_call:
+    inputs:
+      issue_title:
+        description: 'The title of the issue'
+        required: true
+        type: string
+      issue_url:
+        description: 'The URL of the issue'
+        required: true
+        type: string
+      repo_full_name:
+        description: 'The full name of the repository'
+        required: true
+        type: string
+      issue_author_login:
+        description: 'The login of the issue author'
+        required: true
+        type: string
+      issue_author_avatar:
+        description: 'The avatar URL of the issue author'
+        required: true
+        type: string
+    secrets:
+      DISCORD_WEBHOOK_URL:
+        description: 'The Discord webhook URL'
+        required: true
+
+jobs:
+  notify_discord:
+    name: 'Send Issue Notification to Discord'
+    runs-on: ubuntu-latest
+    steps:
+      - name: 'Send notification'
+        run: |
+          JSON_PAYLOAD=$(printf '{
+            "content": "🐛 **Nova Issue Criada!** 🐛",
+            "embeds": [{
+              "title": "%s",
+              "url": "%s",
+              "description": "**Repositório:** %s\n**Autor:** %s",
+              "color": 15158332,
+              "author": {
+                "name": "%s",
+                "icon_url": "%s"
+              },
+              "footer": {
+                "text": "Notificação de Issue"
+              }
+            }]
+          }' \
+          "${{ inputs.issue_title }}" \
+          "${{ inputs.issue_url }}" \
+          "${{ inputs.repo_full_name }}" \
+          "${{ inputs.issue_author_login }}" \
+          "${{ inputs.issue_author_login }}" \
+          "${{ inputs.issue_author_avatar }}")
+          
+          curl -H "Content-Type: application/json" \
+               -d "$JSON_PAYLOAD" \
+               "https://discord.com/api/webhooks/1394398569611661352/OPHZnFP5Q-1_0R0QI94BsBqw0j3eMqqB06AmUasuZ9_XAhamadmcxwWKRB9fpvbOEV9Q"
