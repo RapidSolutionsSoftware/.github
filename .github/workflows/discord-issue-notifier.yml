@@ -1,0 +1,44 @@
+# .github/.github/workflows/discord-issue-notifier.yml
+
+name: 'Discord Issue Notifier'
+
+# Gatilho: executa a action quando uma nova Issue é aberta
+on:
+  issues:
+    types: [opened]
+
+jobs:
+  notify_discord:
+    name: 'Send Issue Notification to Discord'
+    runs-on: ubuntu-latest
+    steps:
+      - name: 'Send notification'
+        run: |
+          # Monta a mensagem em formato JSON para o Discord Embed
+          JSON_PAYLOAD=$(printf '{
+            "content": "🐛 **Nova Issue Criada!** 🐛",
+            "embeds": [{
+              "title": "%s",
+              "url": "%s",
+              "description": "**Repositório:** %s\n**Autor:** %s",
+              "color": 15158332,
+              "author": {
+                "name": "%s",
+                "icon_url": "%s"
+              },
+              "footer": {
+                "text": "Notificação de Issue"
+              }
+            }]
+          }' \
+          "${{ github.event.issue.title }}" \
+          "${{ github.event.issue.html_url }}" \
+          "${{ github.event.repository.full_name }}" \
+          "${{ github.event.issue.user.login }}" \
+          "${{ github.event.issue.user.login }}" \
+          "${{ github.event.issue.user.avatar_url }}")
+          
+          # Envia a notificação usando cURL para o Webhook do Discord
+          curl -H "Content-Type: application/json" \
+               -d "$JSON_PAYLOAD" \
+               "https://discord.com/api/webhooks/1394398569611661352/OPHZnFP5Q-1_0R0QI94BsBqw0j3eMqqB06AmUasuZ9_XAhamadmcxwWKRB9fpvbOEV9Q"
