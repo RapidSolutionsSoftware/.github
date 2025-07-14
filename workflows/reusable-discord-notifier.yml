@@ -60,4 +60,4 @@ jobs:
           
           curl -H "Content-Type: application/json" \
                -d "$JSON_PAYLOAD" \
-               "https://discord.com/api/webhooks/1394398569611661352/OPHZnFP5Q-1_0R0QI94BsBqw0j3eMqqB06AmUasuZ9_XAhamadmcxwWKRB9fpvbOEV9Q"
+               "https://discord.com/api/webhooks/1394407521245991029/Cwl00FDMiObmTHyY7M6M0um9UT66V88qZLg4N6-gs1qIS_ArbDVoxDAz7ER-lixIqqNj"
